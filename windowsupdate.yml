@@ -80,3 +80,6 @@
         reboot_timeout: 900
       register: wr_result
       when: wu_result.reboot_required
+    - name: Report state of updates
+      debug:
+        msg: "Windows update complete. Successfully installed {{wu_result.installed_update_count}}, failed to install {{wu_result.failed_update_count}}, of {{wu_result.found_update_count}} updates." 
