@@ -73,7 +73,6 @@
         state: installed
         log_path: "c:/ansible_wu.txt"
       register: wu_result
-      ignore_errors: True
       
     - name: Show results
       debug:
