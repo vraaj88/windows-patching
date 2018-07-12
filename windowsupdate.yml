@@ -1,10 +1,6 @@
 - name: Hello World Sample
   hosts: all
   tasks:
-    - name: Wait for system to become reachable over WinRM
-      wait_for_connection:
-        timeout: 900 
-  
     - name: Create logs director
       win_file:
         path: c:\slmtools\logs
@@ -25,9 +21,9 @@
       register: pending_reboot_result
 
     - name: Reboot target host if necessary
-      win_command: shutdown /r /f 
-      args:
-        chdir: c:\
+      win_reboot:
+        shutdown_timeout: 900
+        post_reboot_timeout: 900
       register: wr_result
       when: (pending_reboot_result.stdout | from_json).RebootPending == true
 
@@ -60,7 +56,6 @@
         name: wuauserv
         state: started
         start_mode: auto
-# End WSUS cleanup (see comment above)
 
     - name: Run Windows Update on target host
       win_updates:
@@ -73,20 +68,15 @@
         state: installed
         log_path: "c:/ansible_wu.txt"
       register: wu_result
-      ignore_errors: True
       
     - name: Show results
       debug:
         msg: "{{wu_result}}"
 
     - name: Reboot target host if necessary
-      win_command: shutdown /r /f 
-      args:
-        chdir: c:\
+      win_reboot:
+        shutdown_timeout: 900
+        post_reboot_timeout: 900
       register: wr_result
       when: wu_result.reboot_required
-      
-    - name: Wait for system to become reachable over WinRM
-      wait_for_connection:
-        timeout: 900   
         
