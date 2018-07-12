@@ -1,10 +1,6 @@
 - name: Hello World Sample
   hosts: all
   tasks:
-    - name: Wait for system to become reachable over WinRM
-      wait_for_connection:
-        timeout: 900 
-   
     - name: Create logs director
       win_file:
         path: c:\slmtools\logs
@@ -84,7 +80,4 @@
         post_reboot_timeout: 900
       register: wr_result
       when: wu_result.reboot_required
-      
-    - name: Wait for system to become reachable over WinRM
-      wait_for_connection:
-        timeout: 900    
+        
