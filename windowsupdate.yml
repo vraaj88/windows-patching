@@ -27,7 +27,7 @@
     - name: Reboot target host if necessary
       win_reboot:
         shutdown_timeout: 900
-        reboot_timeout: 900
+        post_reboot_timeout: 900
       register: wr_result
       when: (pending_reboot_result.stdout | from_json).RebootPending == true
 
@@ -81,7 +81,7 @@
     - name: Reboot target host if necessary
       win_reboot:
         shutdown_timeout: 900
-        reboot_timeout: 900
+        post_reboot_timeout: 900
       register: wr_result
       when: wu_result.reboot_required
       
