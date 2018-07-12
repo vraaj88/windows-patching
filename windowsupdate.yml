@@ -71,7 +71,7 @@
           - DefinitionUpdates
           - ServicePacks
         state: installed
-        log_path: "c:\\slmtools\\logs\\windows-update-{{ lookup('pipe', 'date +%Y%m%d-%H%M') }}.txt"
+        log_path: "c:/ansible_wu.txt"
       register: wu_result
       
     - name: Show results
