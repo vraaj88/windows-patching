@@ -1,6 +1,10 @@
 - name: Hello World Sample
   hosts: all
   tasks:
+    - name: Wait for system to become reachable over WinRM
+      wait_for_connection:
+        timeout: 900 
+  
     - name: Create logs director
       win_file:
         path: c:\slmtools\logs
@@ -21,9 +25,9 @@
       register: pending_reboot_result
 
     - name: Reboot target host if necessary
-      win_reboot:
-        shutdown_timeout: 900
-        post_reboot_timeout: 900
+      win_command: shutdown /r /f 
+      args:
+        chdir: c:\
       register: wr_result
       when: (pending_reboot_result.stdout | from_json).RebootPending == true
 
@@ -75,9 +79,13 @@
         msg: "{{wu_result}}"
 
     - name: Reboot target host if necessary
-      win_reboot:
-        shutdown_timeout: 900
-        post_reboot_timeout: 900
+      win_command: shutdown /r /f 
+      args:
+        chdir: c:\
       register: wr_result
       when: wu_result.reboot_required
+      
+    - name: Wait for system to become reachable over WinRM
+      wait_for_connection:
+        timeout: 900   
         
