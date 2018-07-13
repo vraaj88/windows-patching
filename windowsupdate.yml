@@ -68,6 +68,7 @@
         state: installed
         log_path: "c:/ansible_wu.txt"
       register: wu_result
+      ignore_errors: True
       
     - name: Show results
       debug:
@@ -79,4 +80,5 @@
         post_reboot_timeout: 900
       register: wr_result
       when: wu_result.reboot_required
+      ignore_errors: True
         
