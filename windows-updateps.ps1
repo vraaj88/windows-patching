@@ -1,6 +1,6 @@
 param (
-    [string]$UserName = "$((Get-ChildItem Env:USERDOMAIN).Value)\$((Get-ChildItem Env:USERNAME).Value)",
-    [string]$Password = $(Read-Host "Enter a password for user '$UserName'")
+    [string]$UserName = 'Administrator',
+    [string]$Password = ('')
 )
 
 # Set up auto-logon
