@@ -68,7 +68,7 @@
 # End WSUS cleanup (see comment above)
 
     - name: Run windows update on target host
-      win_shell: ./windows-updateps.ps1 >> logs.txt
+      win_shell: ./windows-updateps.ps1 
       args: 
         chdir: c:\slmtools\scripts\
         creates: c:\logs.txt 
