@@ -82,3 +82,4 @@
       when: wu_result.reboot_required
       ignore_errors: True
         
+#https://gist.github.com/halberom/0aea275632d2b47af0536e5def01d4d2        
