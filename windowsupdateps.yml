@@ -70,8 +70,7 @@
     - name: Run windows update on target host
       win_shell: ./windows-updateps.ps1 
       args: 
-        chdir: c:\slmtools\scripts\
-        creates: c:\logs.txt 
+        chdir: c:\slmtools\scripts\ 
       register: wu_result   
 
     - name: Show results
