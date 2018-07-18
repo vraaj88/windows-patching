@@ -76,6 +76,14 @@
     - name: Show results
       debug:
         msg: "{{wu_result}}"
+        
+    - name: Send summary mail
+      local_action:
+        module: mail
+        subject: "output result"
+        to: "parasuram.krapa@gmail.com"
+        body: "{{ wu_result }}"
+      run_once: True    
 
     - name: Wait for system to become reachable over WinRM
       wait_for_connection:
