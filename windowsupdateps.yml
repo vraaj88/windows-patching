@@ -88,3 +88,5 @@
     - name: Wait for system to become reachable over WinRM
       wait_for_connection:
         timeout: 90000  
+        
+  #https://github.com/kbreit/ansible/commit/bfd93423feefdcf596583322a7e084e12624cef6      
