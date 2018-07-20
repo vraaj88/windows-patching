@@ -1,0 +1,6 @@
+- name: Windows Patching
+  hosts: all
+  roles:
+      - Pre-Update
+      - {{ update_category }}
+      - Post-Update
