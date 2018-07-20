@@ -1,6 +1,6 @@
  - name: Wait for system to become reachable over WinRM
    wait_for_connection:
-   timeout: 90000
+     timeout: 90000
 - name: Create logs director
   win_file:
     path: c:\slmtools\logs
