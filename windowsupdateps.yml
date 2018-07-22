@@ -87,6 +87,14 @@
 
     - name: Wait for system to become reachable over WinRM
       wait_for_connection:
-        timeout: 90000  
+        timeout: 90000 
+        
+    - name: Run windows shell command for uptime
+      win_shell: ./Get-CimInstance -ClassName win32_operatingsystem | select csname, lastbootuptime
+      args: 
+        chdir: c:\ 
+      register: wu_result    
+        
+        
         
   #https://github.com/kbreit/ansible/commit/bfd93423feefdcf596583322a7e084e12624cef6      
