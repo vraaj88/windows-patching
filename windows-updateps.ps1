@@ -2,6 +2,11 @@ param (
     [string]$UserName = "Administrator",
     [string]$Password = "yj*-!G=wSun2L=ru!5Qj8%.-3zcUArJ*",
     [string]$Result = $('$Results')
+    [string]$Result = $('$Results1')
+    [string]$Result = $('$Results2')
+    [string]$Result = $('$Results3')
+    [string]$Result = $('$Results4')
+    [string]$Result = $('$Results5')
 )
 
 # Set up auto-logon
