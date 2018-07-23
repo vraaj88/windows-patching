@@ -91,7 +91,7 @@
         
     - name: get uptime
       win_command: wmic os get lastbootuptime
-      register: uptime    
+      register: wu_result    
         
          
   #https://github.com/kbreit/ansible/commit/bfd93423feefdcf596583322a7e084e12624cef6      
