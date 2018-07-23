@@ -90,7 +90,7 @@
         timeout: 90000 
         
     - name: get uptime
-      win_command: systeminfo | find "System Boot Time:"
+      win_command: wmic os get lastbootuptime
       register: uptime    
         
          
