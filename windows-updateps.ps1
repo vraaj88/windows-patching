@@ -1,7 +1,6 @@
 param (
     [string]$UserName = $('$LocalAdm'),
-    [string]$Password = $('$LocalAdmPwd'),
-    [string]$Result = $('$Results')
+    [string]$Password = $('$LocalAdmPwd')
 )
 
 # Set up auto-logon
@@ -30,9 +29,16 @@ $BaseCriteria = "IsInstalled=0 and IsHidden=0 and AutoSelectOnWebSites=1"
 
 Function InstallUpdates($Criteria, $Name) {
     # Search for relevant updates.
-    #Write-Host "Searching for updates: $Name"
+    Write-Host "Searching for updates: $Name"
     $Searcher = New-Object -ComObject Microsoft.Update.Searcher
     $SearchResult = $Searcher.Search($Criteria).Updates
+    
+    $retObj = [ordered]@{}
+    $retObj.foundupdates =  $SearchResult.count
+    $retObj.installed =  $Installer.count
+    $retObj.failed = $SearchResult.count - $Installer.count
+    New-Object -TypeName PSObject -Property $retObj 
+
 
     if($SearchResult.Count) {
         # Download updates.
@@ -43,38 +49,41 @@ Function InstallUpdates($Criteria, $Name) {
         $Downloader.Download()
 
         # Install updates.
-        #Write-Host "Installing" $SearchResult.Count "Updates..."
+        Write-Host "Installing" $SearchResult.Count "Updates..."
         $i = 0
         foreach($Result in $SearchResult) {
             $i++
-            #Write-Host "  $($i):" $Result.Title
+            Write-Host "  $($i):" $Result.Title
             $Result.AcceptEULA()
         }
-        #Write-Host ""
+        Write-Host ""
         $Installer = New-Object -ComObject Microsoft.Update.Installer
         $Installer.Updates = $SearchResult
         $Result = $Installer.Install()
 
         # Reboot if required by updates.
         if($Result.rebootRequired) {
-            #Write-Host "Reboot is required..."
+            Write-Host "Reboot is required..."
             shutdown.exe /t 5 /r
             exit
         }
     }
-}
-
+} 
 # First try Service Packs
+$PatchResults=[ordered]@{}
+$Result = InstallUpdates "$BaseCriteria and CategoryIDs contains '68C5B0A3-D1A6-4553-AE49-01D3A7827828'" "Service Packs"
+$PatchResults.ServicePacks=$Result
+$Result = InstallUpdates "$BaseCriteria and CategoryIDs contains '28BC880E-0592-4CBF-8F95-C79B17911D5F'" "Update Rollups"
+$PatchResults.Rollup=$Result
+$Result = InstallUpdates "$BaseCriteria and CategoryIDs contains 'E6CF1350-C01B-414D-A61F-263D14D133B4'" "Critical Updates"
+$PatchResults.Criticalupdates=$Result
+$Result = InstallUpdates "$BaseCriteria and CategoryIDs contains '0FA1201D-4330-4FA8-8AE9-B877473B6441'" "Security Updates"
+$PatchResults.Securityupdates=$Result
+$Result = InstallUpdates "$BaseCriteria and CategoryIDs contains 'E0789628-CE08-4437-BE74-2495B842F43B'" "Definition Updates"
+$PatchResults.DefinitionUpdates=$Result
+New-Object -TypeName PSObject -Property $PatchResults | ConvertTo-Json
+Write-Host "All Updates Installed!"
 
-
-#Write-Host "All Updates Installed!"
-#Write-Host ""
-
-$retObj = [ordered]@{}
-$retObj.foundupdates =  "$SearchResult"
-$retObj.installed =  "$Installer"
-New-Object -TypeName PSObject -Property $retObj | ConvertTo-Json 
-Write-Host "$retObj"
 
 
 
