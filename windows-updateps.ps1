@@ -74,6 +74,7 @@ $retObj = [ordered]@{}
 $retObj.foundupdates =  "$SearchResult"
 $retObj.installed =  "$Installer"
 New-Object -TypeName PSObject -Property $retObj | ConvertTo-Json 
+Write-Host "$retObj"
 
 
 
