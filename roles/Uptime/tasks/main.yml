@@ -1,0 +1,14 @@
+- name: Copy Powershell script
+  win_copy: 
+    src: uptime.ps1
+    dest: c:\slmtools\scripts\uptime.ps1
+
+- name: Run windows update on target host
+  win_shell: ./uptime.ps1 
+  args: 
+    chdir: c:\slmtools\scripts\ 
+  register: uptime_result   
+
+- name: Show results
+  debug:
+    msg: "{{uptime_result}}"
