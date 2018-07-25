@@ -3,5 +3,5 @@
   roles:
       - Uptime
       - Pre-Update
-      - SecurityUpdate
+      - { role: SecurityUpdate, when: security_update == 'True' }
       - Post-Update
