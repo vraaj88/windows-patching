@@ -72,15 +72,15 @@ Function InstallUpdates($Criteria, $Name) {
 } 
 # First try Service Packs
 $PatchResults=[ordered]@{}
-$Result 
+$Result = InstallUpdates "$BaseCriteria and CategoryIDs contains '68C5B0A3-D1A6-4553-AE49-01D3A7827828'" "Service Packs"
 $PatchResults.ServicePacks=$Result
-$Result 
+$Result = InstallUpdates "$BaseCriteria and CategoryIDs contains '28BC880E-0592-4CBF-8F95-C79B17911D5F'" "Update Rollups"
 $PatchResults.Rollup=$Result
-$Result 
+$Result = InstallUpdates "$BaseCriteria and CategoryIDs contains 'E6CF1350-C01B-414D-A61F-263D14D133B4'" "Critical Updates"
 $PatchResults.Criticalupdates=$Result
-$Result
+$Result = InstallUpdates "$BaseCriteria and CategoryIDs contains '0FA1201D-4330-4FA8-8AE9-B877473B6441'" "Security Updates"
 $PatchResults.Securityupdates=$Result
-$Result 
+$Result = InstallUpdates "$BaseCriteria and CategoryIDs contains 'E0789628-CE08-4437-BE74-2495B842F43B'" "Definition Updates"
 $PatchResults.DefinitionUpdates=$Result
 New-Object -TypeName PSObject -Property $PatchResults | ConvertTo-Json
 Write-Host "All Updates Installed!"
