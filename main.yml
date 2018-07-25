@@ -4,4 +4,8 @@
       - Uptime
       - Pre-Update
       - { role: SecurityUpdate, when: security_update == 'True' }
+      - { role: CriticalUpdate, when: critical_update == 'True' }
+      - { role: ServicePacksUpdate, when: service_update == 'True' }
+      - { role: RollupsUpdate, when: rollup_update == 'True' }
+      
       - Post-Update
