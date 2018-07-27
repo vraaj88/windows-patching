@@ -95,5 +95,5 @@ if(-not $auditing) {
     Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\winlogon" -name DefaultPassword
     &schtasks /Delete /TN "Windows-Update-Script" /F
 }
-if($resumed) { Pause }
+
 
