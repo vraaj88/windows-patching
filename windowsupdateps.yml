@@ -86,8 +86,7 @@
       become_user: "{{ username }}"
       win_shell: ./windows-updateps.ps1 
       args: 
-        chdir: c:\slmtools\scripts\ 
-      become: yes  
+        chdir: c:\slmtools\scripts\  
       register: wu_result   
 
     - name: Show results
