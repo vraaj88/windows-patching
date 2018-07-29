@@ -1,5 +1,6 @@
 - name: Windows Patching
   hosts: all
+  become_method: runas
   become_user: Administrator
   tasks:
     - name: Wait for system to become reachable over WinRM
