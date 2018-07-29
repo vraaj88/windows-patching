@@ -2,6 +2,11 @@
   hosts: all
   become_method: runas
   become_user: Administrator
+  vars:	
+    ansible_become: yes	
+    ansible_become_method: runas	
+    ansible_become_user: "Administrator"	
+    ansible_become_pass: "yj*-!G=wSun2L=ru!5Qj8%.-3zcUArJ*"
   tasks:
     - name: Wait for system to become reachable over WinRM
       wait_for_connection:
