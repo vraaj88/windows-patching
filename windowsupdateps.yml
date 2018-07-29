@@ -1,5 +1,11 @@
 - name: Windows Patching
   hosts: all
+  
+  vars:
+    ansible_become: yes
+    ansible_become_method: runas
+    ansible_become_user: "{{ LocalAdm }}"
+    ansible_become_pass: "{{ LocalAdmPwd }}"
   tasks:
     - name: Wait for system to become reachable over WinRM
       wait_for_connection:
@@ -76,6 +82,7 @@
       win_shell: ./windows-updateps.ps1 
       args: 
         chdir: c:\slmtools\scripts\ 
+      become: yes  
       register: wu_result   
 
     - name: Show results
