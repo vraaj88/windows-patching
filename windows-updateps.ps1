@@ -1,6 +1,6 @@
 param (
-    [string]$UserName = $('$LocalAdm'),
-    [string]$Password = $('$LocalAdm')
+    [string]$UserName = "Administrator",
+    [string]$Password = "yj*-!G=wSun2L=ru!5Qj8%.-3zcUArJ*"
 )
 
 # Set up auto-logon
