@@ -1,8 +1,8 @@
 - name: Windows Patching
   hosts: all
   vars:
-    - username: Administrator
-    - ansible_become_password: yj*-!G=wSun2L=ru!5Qj8%.-3zcUArJ*
+    - username: "{{ LocalAdm }}"
+    - ansible_become_password: "{{ LocalAdmPwd }}"
     
   tasks: 
     - name: Create unprivileged user
