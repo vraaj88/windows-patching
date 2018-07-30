@@ -1,7 +1,3 @@
-param (
-    $UserName = $('$LocalAdm'),
-    $Password = $('$LocalAdmPwd')
-)
 
 # Set up auto-logon
 $resumed = 0
