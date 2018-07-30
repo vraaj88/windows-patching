@@ -1,7 +1,15 @@
 - name: Windows Patching
   hosts: all
+  vars:
+    - username: Administrator
+    - ansible_become_password: yj*-!G=wSun2L=ru!5Qj8%.-3zcUArJ*
     
-  tasks:    
+  tasks: 
+    - name: Create unprivileged user
+      win_user:
+        name: "{{ username }}"
+        password: "{{ ansible_become_password }}"
+        state: present
     - name: Wait for system to become reachable over WinRM
       wait_for_connection:
         timeout: 90000
@@ -78,7 +86,7 @@
         chdir: c:\slmtools\scripts\ 
       become: true
       become_method: runas
-      become_user: Administrator  
+      become_user: "{{ username }}" 
       register: wu_result   
 
     - name: Show results
