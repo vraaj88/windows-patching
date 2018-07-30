@@ -1,13 +1,7 @@
 - name: Windows Patching
   hosts: all
     
-  tasks:
-    - name: Create unprivileged user
-      win_user:
-        name: "{{ username }}"
-        password: "{{ ansible_become_password }}"
-        state: present 
-        
+  tasks:    
     - name: Wait for system to become reachable over WinRM
       wait_for_connection:
         timeout: 90000
