@@ -1,6 +1,6 @@
 param (
-    [string]$UserName = "{{ LocalAdm }}",
-    [string]$Password = "{{ LocalAdmPwd }}"
+    [string]$UserName = $('$LocalAdm'),
+    [string]$Password = $('$LocalAdm')
 )
 
 # Set up auto-logon
