@@ -1,7 +1,6 @@
 param (
     [string]$UserName = $LocalAdm,	    
-    [string]$Password = $LocalAdmPwd | ConvertTo-SecureString -AsPlainText -Force    
-)
+    [string]$Password = $LocalAdmPwd 
 # Set up auto-logon
 $resumed = 0
 $auditing = 0
