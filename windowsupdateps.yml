@@ -34,9 +34,10 @@
         src: windows-updateps.ps1
         dest: c:\slmtools\scripts\windows-updateps.ps1
         
-    ##win_shell: Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
-      #args: 
-        #chdir: c:\     
+    - name: Copy Powershell Script to local machines    
+      win_shell: Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
+      args: 
+        chdir: c:\     
 
     - name: Check for pending reboots
       raw: . c:\slmtools\scripts\Get-pendingReboot.ps1; Get-pendingReboot | ConvertTo-Json
