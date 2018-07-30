@@ -1,8 +1,5 @@
 - name: Windows Patching
   hosts: all
-  vars:
-    - username: Administrator
-    - ansible_become_password: yj*-!G=wSun2L=ru!5Qj8%.-3zcUArJ*
     
   tasks:
     - name: Create unprivileged user
@@ -82,11 +79,12 @@
 # End WSUS cleanup (see comment above)
 
     - name: Run windows update on target host
-      become: yes
-      become_user: "{{ username }}"
       win_shell: ./windows-updateps.ps1 
       args: 
-        chdir: c:\slmtools\scripts\  
+        chdir: c:\slmtools\scripts\ 
+      become: true
+      become_method: runas
+      become_user: Administrator  
       register: wu_result   
 
     - name: Show results
