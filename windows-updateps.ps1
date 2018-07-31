@@ -1,6 +1,7 @@
 param (
     [string]$UserName = $args[0],	    
     [string]$Password = $args[1] 
+)    
 # Set up auto-logon
 $resumed = 0
 $auditing = 0
