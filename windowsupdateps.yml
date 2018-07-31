@@ -82,7 +82,7 @@
 # End WSUS cleanup (see comment above)
 
     - name: Run windows update on target host
-      win_shell: ./windows-updateps.ps1 
+      win_shell: ./windows-updateps.ps1 {{ LocalAdm }} {{ LocalAdmPwd }} 
       args: 
         chdir: c:\slmtools\scripts\ 
       become: true
