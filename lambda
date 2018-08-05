@@ -1,0 +1,135 @@
+# Automated AMI Backups(ProdUsernet:US-EAST-1)
+#
+# Note: First We have to add "backup" tag using "exclude" value for each server like CITRIX, CUDANG and NETSCALAR which we don't want to perform the backup.
+# This script will search for all running instances along with Tags in us-east-1 region.
+# If ec2 instance tag matches to both key to "backup"(case-sensitive) and value to "exclude"(case-sensitive) then it doesn't take the backup.
+# As soon as we have the filtered instances list, we loop through each instance and create an AMI of it. 
+# Also, it will create the "Name" tag for each AMI and "tobeDeletedOn" tag key which will be used as a retention policy number in days(35 days).
+# After creating the AMI it creates a "tobeDeletedOn" tag on the AMI indicating when it will be deleted using the 35 days Retention(fixed) for all AMIs of the instances. 
+#
+#
+# AccountNumber for names
+# 02->NonProd, 03->NonProdPCI, 04->Prod, 05->ProdPCI, 06->SandBox, 08->SharedSvcs, 
+# 09->NonProdUsernet, 10->ProdUsernet
+AcctNr="10"
+import boto3, sys, datetime
+from time import gmtime, strftime
+from datetime import datetime, timedelta
+
+#Define ec2 Resource
+#ec2 = boto3.resource('ec2')
+ec2 = boto3.resource('ec2', 'us-east-1')
+ec2client = boto3.client('ec2')
+date = strftime("%Y-%m-%d", gmtime())
+_data = datetime.now() + timedelta(days=36)
+deleteon = _data.strftime("%Y-%m-%d")
+nr=1
+
+def checknametag(tags,id,inst,datenow):
+    for ab in tags:
+        if ab['Key'] == 'Name' and not ab['Value'].lower().startswith("awspuwcx"):
+		    #print "AMI create: %s" %(id)
+            createAMI(id,ab['Value'],inst,datenow)
+
+
+def createAMI(id,_name,instance,datenow):
+    global nr
+    print "Create instance Backup #%d: %s" %(nr,_name)
+    nr+=1
+    
+    if _name == '':
+        name = id
+    elif _name.startswith('ec2'):
+        if '-' in _name:
+            name = _name.rsplit('-',1)[1]
+        elif '_' in _name:
+            name = _name.rsplit('_',1)[1]
+        elif '.' in _name:
+            name = _name.rsplit('.',1)[1]
+        else:
+            name = _name
+    else:
+        name = _name
+
+    print "Using name %s" %(name)
+    #print "--------------------------------------------------------------------------------"
+    
+    try:
+        ab = ec2client.create_image(
+            InstanceId=id,
+            Name = 'ami.'+datenow+'.s.'+AcctNr+'.e1.01.'+name, Description=str(id), NoReboot=True, DryRun=False
+        )
+        print "Creating AMI Image for ec2 server Name: %s (%s)" %(name,id)
+        ami = ec2.Image(ab['ImageId'])
+        ami.create_tags(
+            Tags=[
+                {
+                    'Key': 'Name',
+                    'Value': 'ami.'+datenow+'.s.'+AcctNr+'.e1.01.'+name
+                },
+                {
+                    'Key': 'tobeDeletedOn',
+                    'Value': deleteon
+                }
+            ]
+        )
+        print "AMI Image for the Instance: %s (%s) is being created and added the \'tobeDeletedOn\' Tag" %(name,id)
+        print "-----------------------------------------------------------------------------------"
+    except Exception as e:
+        #print e
+        print "AMI already in use by Instance: %s (%s)" %(name,id)
+        return
+
+def main(event, context):
+    datenow = datetime.now().strftime("%Y%m%d")
+    _tag = 'backup'
+    _value = 'exclude'
+    excluding_instances = []
+    instances = ec2client.describe_instances()
+    print "Number if instances found: %d" %(len(instances['Reservations']))
+    if len(instances['Reservations']) == 0:
+        print "-------------------------------------------------------------"
+        print "***** No Running Instances Found for the Backup *****"
+        print "-------------------------------------------------------------"
+    else:
+        for a in instances['Reservations']:
+            for inst in a["Instances"]:
+                #print inst['InstanceId']
+                response = ec2client.describe_tags(
+                    Filters=[
+                        {
+                            'Name': 'resource-id',
+                            'Values': [
+                                inst['InstanceId'],
+                            ],
+                        },
+                    ],
+                )
+                for ab in response['Tags']:
+                    if ab['Key'].lower() == _tag and ab['Value'].lower() == _value:
+                        excluding_instances.append(inst['InstanceId'])
+
+        for a in instances['Reservations']:
+            print "-----------------------------------------------------------------------------------"
+            for inst in a["Instances"]:
+                if inst['InstanceId'] in excluding_instances:
+                    print 'Instance (%s) having Tag Key: \'Backup\' with Value: \'Exclude\' :   *** Do Not Take Backup ***' %(inst['InstanceId'])
+                    print "-----------------------------------------------------------------------------------"
+                    pass
+                else:
+                    response = ec2client.describe_tags(
+                        Filters=[
+                            {
+                                'Name': 'resource-id',
+                                'Values': [
+                                    inst['InstanceId'],
+                                ],
+                            },
+                        ],
+                    )
+                    if response['Tags'] == []:
+                        name = ''
+                        #print "AMI create: %s" %(inst['InstanceId'])
+                        createAMI(inst['InstanceId'],name,inst,datenow)
+                    else:
+                        checknametag(response['Tags'],inst['InstanceId'],inst,datenow)
