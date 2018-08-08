@@ -76,6 +76,11 @@
       debug:
         msg: "{{wu_result}}"
         
+    - name: Error for the server
+      debug:
+        msg: "{{wu_result}}"
+      when: wu_result.rc != 0
+        
     - name: Error Captured for failed host
       local_action: copy content="{{ foo_result.stderr }}" dest="/tmp/error.log"
       when: "'Failed' in wu_result.stderr"
