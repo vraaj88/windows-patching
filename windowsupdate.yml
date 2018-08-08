@@ -75,6 +75,10 @@
     - name: Show results
       debug:
         msg: "{{wu_result}}"
+        
+    - name: Error Captured for failed host
+      local_action: copy content="{{ foo_result.stderr }}" dest="/tmp/error.log"
+      when: "'Failed' in wu_result.stderr"
 
     - name: Reboot target host if necessary
       win_reboot:
