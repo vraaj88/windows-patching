@@ -88,7 +88,9 @@
       become: true
       become_method: runas
       become_user: "{{ username }}" 
-      register: wu_result   
+      register: wu_result
+      retries: 3
+      until: result.rc == 0
 
     - name: Show results
       debug:
