@@ -96,6 +96,11 @@
       debug:
         msg: "{{wu_result}}"
         
+    - name: Error for the server
+      debug:
+        msg: "{{wu_result}}"
+      when: wu_result.rc != 0    
+        
     - name: Send summary mail
       local_action:
         module: mail
