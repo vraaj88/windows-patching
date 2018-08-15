@@ -1,0 +1,42 @@
+#WORKING
+# TO FETCH THE INSTNCES WHICH ARE NOT SENDING THE CLW LOGS 
+import boto3
+import datetime
+import time
+#{logstream:[[{dic}],ResponseMetadata:{dict}]}
+client = boto3.client('logs')
+response = client.describe_log_streams(logGroupName='cwlg.01.s.02.e1.03.clwagentlogs') 
+#print(response,'\n')
+#response3 = (response('logStreams'))
+response2=(response['logStreams']) # returns a list of dictonary
+
+currentUTCtime2 = int(datetime.datetime.utcnow().timestamp())
+timediff = currentUTCtime2-72000
+print('\n ******************************* \n')
+instanceNo=len(response2)
+print('There are ',instanceNo-1,'instances configured for CloudWatch Agent logs \n')
+i=1
+j=1
+x=1
+print(' The Below instances successfully logging in 1 hr duration \n ')
+while i < instanceNo:    
+    lastEventTimestamp=str(response2[i]['lastEventTimestamp'])[0: 10]
+    timestamp = int(lastEventTimestamp)
+    UTClastEventTimestamp = (datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S'))
+    if timestamp > timediff:        
+        print(x,' ', response2[i]['logStreamName'],'   ',UTClastEventTimestamp,'\n')
+        x +=1
+    i +=1    
+    #print(i,' ', response2[i]['logStreamName'],'   ',response2[i]['lastEventTimestamp'],'\n')
+
+print('\n The Below instances are NOT logging the system events since below mentioned time \n')
+x=1
+while j < instanceNo:   
+    lastEventTimestamp=str(response2[j]['lastEventTimestamp'])[0: 10]
+    timestamp = int(lastEventTimestamp)
+    UTClastEventTimestamp = (datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S'))
+    if timestamp < timediff:        
+        print(x,' ', response2[j]['logStreamName'],'   ',UTClastEventTimestamp,'\n')
+        x +=1   
+    j +=1
+    
