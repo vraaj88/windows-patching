@@ -56,3 +56,14 @@
    register: res
  - name: Agent service
    debug: var=res.stdout_lines
+
+
+---------------------------------------------------------------------------------
+- name: Filter process list for Cloudwatch agent running
+       win_shell: ps  | ?{ $_ -match '.*AWS.CloudWatch.*'}
+       register: res
+     - name: Cloudwatch Agent process
+       debug: var=res.stdout_lines
+     - name: Check for Cloudwatch agent running
+       fail: msg="CloudWatch agent not running"
+       when: not res.stdout is search('AWS.CloudWatch')
