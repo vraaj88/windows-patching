@@ -1,0 +1,58 @@
+# Installs CloudWatch agent on Windows 2016 server in us-east-1
+#
+# Expects variables
+# Set these variables with -e when calling with ansible or set in Tower template
+# or they're set when calling with include from another playbook
+#
+# Following variables come out of group_vars/all
+#  aws_access_key
+#  aws_secret_key
+#  region
+#  S3_AgentBucket: S3 bucket for agent packages in /agentsoftware/SCCM
+#  AWS_Domain:     Domain for CloudWatch (nonprod,prod,nonprodpci,prodpci,...
+#
+# Test with Ansible on awsnplansdv001:
+# run /home/ansible/venv27/bin/activate
+# then run playbook with
+# ansible-playbook 
+#
+# Rainer Kraft
+# 6/28/2018
+
+---
+ - set_fact: SWPkg="CloudWatch"
+ - name: Get Agentzip out of S3
+   delegate_to: localhost
+   aws_s3:
+     aws_access_key: "{{ aws_access_key }}"
+     aws_secret_key: "{{ aws_secret_key }}"
+     region: "{{ region }}"
+     bucket: "{{ S3_AgentBucket }}"
+     object: /agentsoftware/SCCM/{{SWPkg}}.zip 
+     dest: /tmp/{{SWPkg}}.zip
+     mode: get
+   when:  no_s3_download is undefined
+
+ - name: Copy package to server
+   win_copy:
+         src: "/tmp/{{ SWPkg }}.zip"
+         dest: "c:/windows/temp/{{ SWPkg }}.zip"
+   when:  no_wincp is undefined
+ - name: Unzip package on server
+   win_shell: Expand-Archive "c:/windows/temp/{{ SWPkg }}.zip" "c:/windows/temp" -Force
+   when:  no_unzip is undefined
+ - name: Install application
+   win_shell: ./Deploy-Application.ps1 -DeployMode silent -subscription {{ AWS_Domain }}
+   args:
+     chdir: "c:/windows/temp/CloudWatch/SCCM"
+     register: res
+     when: no_install is undefined
+ - name: Installation return code
+   debug: var=res.rc
+ - name: Installation output
+   debug: var=res.stdout_lines
+ - name: Check for agent running
+   win_shell: ps  | ?{ $_ -match '.*AWS.CloudWatch.*'}
+   register: res
+ - name: Agent service
+   debug: var=res.stdout_lines
