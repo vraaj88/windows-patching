@@ -1,0 +1,14 @@
+---
+- name: Check Cloudwatch Agent is running or not
+  win_shell:  ps  | ?{ $_ -match '.*AWS.CloudWatch.*'}
+  register: res
+
+- name: Store the output
+  debug: var=res.stdout_lines
+
+- name: check Agent running
+  fail: msg="CloudWatch agent not running"
+  when: not res.stdout is search('AWS.CloudWatch')
+
+ - name: Start Cloudwatch service
+   win_shell: Restart-Service AmazonSSMAgent
