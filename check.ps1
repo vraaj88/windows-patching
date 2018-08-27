@@ -14,3 +14,6 @@ while ($arrService.Status -ne 'Running')
     }
 
 }
+#https://stackoverflow.com/questions/40658251/why-are-cloudwatch-logs-sent-from-my-windows-ec2-instance-not-showing-up-on-aws
+#https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html
+#https://docs.aws.amazon.com/cli/latest/reference/iam/add-role-to-instance-profile.html
