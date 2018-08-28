@@ -18,3 +18,7 @@ while ($arrService.Status -ne 'Running')
 #https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html
 #https://docs.aws.amazon.com/cli/latest/reference/iam/add-role-to-instance-profile.html
 #https://stackoverflow.com/questions/406230/regular-expression-to-match-a-line-that-doesnt-contain-a-word 
+
+
+#https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/create-cloudwatch-agent-configuration-file-wizard.html
+#https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/UseCloudWatchUnifiedAgent.html
